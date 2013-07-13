@@ -2,9 +2,28 @@ mkdicewarelist by Thomas Preece
 http://thomaspreece.net
 thomas@thomaspreece.net
 
-This is a program to generate a diceware list. For more details, please see:
+This is a program to generate a Diceware list. For more details, please see:
 http://world.std.com/~reinhold/diceware.html
 
-To use, supply a list of at least 6783 words on the standard input. You'll then get a diceware list based on these words, plus the words from the Diceware Kit, on the standard output.
+Usage:
+	./mkdicewarelist [-r regex] [-d 5d6] [-k] <wordlist >dicewarelist
 
-To do: customise the matching regex, allow user not to use the Diceware Kit wordlist.
+where:
+	-r specifies a regex for selecting words from the wordlist
+		(the default is ^.*$ - ie, all words from the list pass automatically)
+	-d specifies the number and type of dice, using standard dice notation
+		(the default is 5d6, ie 5 six-sided dice)
+		You can use d4, d6, d8 or d10; you can also leave off the number before
+		or after the 'd' to get the default (ie, d8 -> 5d8; 4d -> 4d6)
+	-k means that the Diceware Kit Word List will not be used
+
+In other words; for a standard Diceware list, don't use any parameters. But if
+you want a particular custom type of list for some reason, you can.
+
+With the default settings, you'll need to supply a list of at least 6783 words
+on the standard input, one word per line. Note that you don't need to pre-sort
+this list, however you should ensure that it has no duplicates. If there are too
+many words, then a random selection will be made; even though this uses your
+computer's pseudo-random generator, which isn't cryptographically secure, this
+is not an issue for generating the word list, as it doesn't actually matter if
+the words in the list are predictable - after all, the result is publicly known.

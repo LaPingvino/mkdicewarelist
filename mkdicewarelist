@@ -21,8 +21,11 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-import random, re
-from sys import exit, stdin, stdout, stderr
+import getopt, random, re
+from sys import argv, exit, stdin, stdout, stderr
+
+DICE_BASES = [4, 6, 8, 10]
+MIN_WORDS = 5000
 
 def inc_dice(dice, base=6):
 	dice = dice[::-1]
@@ -32,6 +35,8 @@ def inc_dice(dice, base=6):
 	for d in dice:
 		d = int(d)
 		
+		if base == 10 and d == 0: d = 10
+		
 		if not (0 < d <= base): raise ValueError('dice out of range')
 		
 		if carry:
@@ -39,6 +44,7 @@ def inc_dice(dice, base=6):
 			if d > base: d = 1
 			else: carry = False
 		
+		if base == 10 and d == 10: d = 0
 		out += str(d)
 	
 	if carry: raise ValueError('cannot increment maximum value')
@@ -46,19 +52,57 @@ def inc_dice(dice, base=6):
 	return out[::-1]
 
 def main():
-	# set some parameters
-	kit = get_kit()
-
-	regex_string = '^[abcdefghijklmnopqrstuvwxyz]{3,6}$'
+	stderr.write('mkdicewarelist (c) Thomas Preece 2013\n')
+	
+	regex_string = '^.*$'
 	base = 6
 	dice_count = 5
 	use_kit = True
-
+	
+	# get parameters from the command line
+	try:
+		opts, args = getopt.getopt(argv[1:], 'd:kr:')
+	except getopt.GetoptError as err:
+		print str(err)
+		exit(2)
+	
+	for o, a in opts:
+		if o == '-k':
+			# use the diceware kit word list
+			use_kit = False
+		elif o == '-r':
+			# change the regex string for selecting words
+			regex_string = a
+		elif o == '-d':
+			# change the dice being used
+			# specified in dice notation; default is 5d6
+			# (you can leave out either part)
+			arr = a.split('d')
+			try:
+				dice_count = int(arr[0])
+			except:
+				pass
+			try:
+				base = int(arr[1])
+			except:
+				pass
+			
+			if dice_count < 1:
+				stderr.write('You must use at least one die!')
+				exit(2)
+			
+			if base not in DICE_BASES:
+				stderr.write('You must select a valid dice type!')
+				exit(2)
+	
 	total_words = base ** dice_count
-
-	stderr.write('mkdicewarelist (c) Thomas Preece 2013\n')
+	
 	stderr.write('using %dd%d for a total of %d words\n' % (dice_count, base, total_words))
-
+	
+	if total_words < MIN_WORDS:
+		stderr.write('WARNING - this is a low number of words. Try increasing the number of dice for more security.')
+	
+	kit = get_kit()
 	if use_kit:
 		total_words -= len(kit)
 		stderr.write('using the diceware kit base wordlist; need %d new words\n' % total_words)
@@ -1103,4 +1147,6 @@ def get_kit():
 		'zzzz'
 	]
 
-main()
+if __name__ == '__main__':
+	main()
+
