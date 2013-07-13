@@ -1,0 +1,10 @@
+mkdicewarelist by Thomas Preece
+http://thomaspreece.net
+thomas@thomaspreece.net
+
+This is a program to generate a diceware list. For more details, please see:
+http://world.std.com/~reinhold/diceware.html
+
+To use, supply a list of at least 6783 words on the standard input. You'll then get a diceware list based on these words, plus the words from the Diceware Kit, on the standard output.
+
+To do: customise the matching regex, allow user not to use the Diceware Kit wordlist.
