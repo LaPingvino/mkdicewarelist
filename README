@@ -27,3 +27,5 @@ many words, then a random selection will be made; even though this uses your
 computer's pseudo-random generator, which isn't cryptographically secure, this
 is not an issue for generating the word list, as it doesn't actually matter if
 the words in the list are predictable - after all, the result is publicly known.
+
+A sample output, which is an Esperanto Diceware list, is included for reference.
